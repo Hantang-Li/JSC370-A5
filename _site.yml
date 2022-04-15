@@ -1,0 +1,17 @@
+name: "my-website"
+output_dir: "./docs"
+navbar:
+  title: "JSC370 A5"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Three Youtube Data Interactive visualization"
+      href: page2.html
+    - text: "Extra Credit: Lab12 content"
+      href: page3.html
+output:
+  html_document:
+    theme: cosmo
+    include:
+      after_body: footer.html
+    css: styles.css

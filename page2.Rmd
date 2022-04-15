@@ -1,0 +1,110 @@
+---
+title: "Youtube Data Interactive visualization"
+author: "Hantang Li"
+date: "4/5/2022"
+output: 
+  html_document:
+    toc: True
+    toc_float: True
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F, message = F, eval = T)
+library(dplyr)
+library(plotly)
+```
+
+## Interactive plots
+
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
+load("df_CA_trending.Rda")
+```
+
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
+df_vid_duration_avg <- df_CA_trending %>%
+  filter(likes > 0) %>% 
+  filter(views > 0) %>% 
+  filter(chunk_vid_duration > 0) %>% 
+  group_by(category_name, year) %>% 
+  summarise(across(c(chunk_vid_duration, views, likes), mean, na.rm = TRUE))
+
+df_vid_duration_count <- df_CA_trending %>%
+  group_by(category_name, year) %>% 
+  count()
+
+df_vid_count_duration_avg <- merge(df_vid_duration_avg, df_vid_duration_count)
+
+df_vid_count_duration_avg$category_name <- replace(df_vid_count_duration_avg$category_name, df_vid_count_duration_avg$category_name=="29", "Nonprofits & Activism")
+
+# Normalize count
+num_videos_2017 <- count(df_CA_trending[df_CA_trending$year=="2017",])
+num_videos_2022 <- count(df_CA_trending[df_CA_trending$year=="2022",])
+
+df_vid_count_duration_avg_2017 <- df_vid_count_duration_avg[df_vid_count_duration_avg$year=="2017",]
+df_vid_count_duration_avg_2022 <- df_vid_count_duration_avg[df_vid_count_duration_avg$year=="2022",]
+
+df_vid_count_duration_avg_2017$norm_n <- df_vid_count_duration_avg_2017$n / num_videos_2017$n
+df_vid_count_duration_avg_2022$norm_n <- df_vid_count_duration_avg_2022$n / num_videos_2022$n
+
+df_vid_count_duration_avg <- rbind(df_vid_count_duration_avg_2017, df_vid_count_duration_avg_2022)
+
+# Plot
+
+p1_scatter <- df_vid_count_duration_avg %>% 
+  plot_ly(x = ~year, y = ~views,
+          type = 'scatter', mode = 'markers', color = ~category_name,
+          size = ~norm_n, sizes = c(5, 70), marker = list(sizemode='diameter', opacity=0.5),
+          hoverinfo = 'text',
+          text = ~paste( paste("Category ", category_name, ":", sep=""), paste("Average duration: ", chunk_vid_duration, sep="") , 
+                         paste(" Average views: ", views, sep=""), paste(" Average likes: ", likes, sep=""), paste(" Count: ", n, sep=""),
+                         paste(year, " Video Percentage: ", norm_n, sep=""), sep = "<br>")) %>%
+  layout(title = "2017 and 2022 Youtube trending video Average Views vs Percentage per category",
+                  yaxis = list(title = "Average views"), xaxis = list(title = "Year"),
+         hovermode = "compare")
+
+
+
+
+p2_scatter <- df_vid_count_duration_avg %>% 
+  plot_ly(x = ~chunk_vid_duration, y = ~views,
+          type = 'scatter', mode = 'markers', color = ~category_name,
+          size = ~norm_n, sizes = c(5, 70), marker = list(sizemode='diameter', opacity=0.5),
+          symbol = ~year,
+          hoverinfo = 'text',
+          text = ~paste( paste("Category ", category_name, ":", sep=""), paste("Average duration: ", chunk_vid_duration, sep="") , 
+                         paste(" Average views: ", views, sep=""), paste(" Average likes: ", likes, sep=""), paste(" Count: ", n, sep=""),
+                         paste(year, " Video Percentage: ", norm_n, sep=""), sep = "<br>")) %>%
+  layout(title = "2017 and 2022 Youtube trending video Average views vs Average duration",
+                  yaxis = list(title = "Average views"), xaxis = list(title = "Average duration"),
+         hovermode = "compare")
+```
+
+# Visualize relationship between video views and other variables {.tabset}
+
+## 2017 and 2022 Youtube trending video Average Views vs Percentage per category
+
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
+p1_scatter
+```
+
+
+## 2017 and 2022 Youtube trending video Average views vs Average duration
+
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
+p2_scatter
+```
+
+# Percentage of trending videos per category
+
+Here I visualized the percentage of the number of videos that belong to each category each year,
+you can select to see the popularity of videos each year and compare them.
+
+```{r, message=FALSE, echo=FALSE, warning=FALSE}
+p3 <- ggplot(data=df_vid_count_duration_avg, aes(x=reorder(category_name, -n), y=norm_n, colour=year)) +
+geom_bar(stat="identity", position=position_dodge())+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+ 
+  ylab("Percentage of videos in a year")+
+  xlab("Category name")+
+  ggtitle("Percentage of trending videos per category")
+ggplotly(p3)
+```
+
