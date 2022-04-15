@@ -1,7 +1,7 @@
 ---
 title: "Youtube Data Interactive visualization"
 author: "Hantang Li"
-date: "4/5/2022"
+date: "4/14/2022"
 output: 
   html_document:
     toc: True
@@ -92,19 +92,5 @@ p1_scatter
 
 ```{r, message=FALSE, echo=FALSE, warning=FALSE}
 p2_scatter
-```
-
-# Percentage of trending videos per category
-
-Here I visualized the percentage of the number of videos that belong to each category each year,
-you can select to see the popularity of videos each year and compare them.
-
-```{r, message=FALSE, echo=FALSE, warning=FALSE}
-p3 <- ggplot(data=df_vid_count_duration_avg, aes(x=reorder(category_name, -n), y=norm_n, colour=year)) +
-geom_bar(stat="identity", position=position_dodge())+ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))+ 
-  ylab("Percentage of videos in a year")+
-  xlab("Category name")+
-  ggtitle("Percentage of trending videos per category")
-ggplotly(p3)
 ```
 

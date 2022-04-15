@@ -5,9 +5,9 @@ navbar:
   left:
     - text: "Home"
       href: index.html
-    - text: "Three Youtube Data Interactive visualization"
+    - text: "Relationship between video views and other variables"
       href: page2.html
-    - text: "Extra Credit: Lab12 content"
+    - text: "Percentage of trending videos per category"
       href: page3.html
 output:
   html_document:

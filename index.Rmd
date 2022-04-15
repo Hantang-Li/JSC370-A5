@@ -1,6 +1,7 @@
 ---
 title: "JSC370 A5 Youtube Data Interactive visualization"
 author: "Hantang Li"
+date: "4/14/2022"
 output: 
     html_document
 ---
@@ -12,5 +13,5 @@ This is my JSC370 A5 website.
 YouTube, the world's third most popular online destination, has transformed from a video-sharing site into a job opportunity for content creators in both new and mainstream media. 
 Individuals who upload videos on Youtube, also known as YouTubers, could turn on monetization features. One of the major ways YouTubers earn money is through the number of ad views. Since ad views depend on each video's views, we would like to analyze what factors could result in a high view and how people's preferences have changed in recent years.
 
-This website will show you an interactive visualization between video views and video categories for youtube trending videos from 2017 and 2022, respectively. You can also view other related variables: {Average duration, Average likes, Percentage of videos in such category in a year} By hovering your mouth through those icons.
+This website will show you three interactive visualization plots across two page, plots shows relationship between video views and video categories for YouTube trending videos from 2017 and 2022, respectively. You can also view other related variables: {Average duration, Average likes, Percentage of videos in such category in a year} By hovering your mouth through those icons.
 
